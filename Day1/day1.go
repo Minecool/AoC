@@ -4,43 +4,40 @@ import (
 	"os"
 	"strings"
 	"strconv"
+	"log"
 )
 
-func solve() {
-	for i:=0; i<len(splitData);i++ {
-		intSplitData, err := strconv.Atoi(splitData[i]); // no idea what Atoi means
-		if err != nil {
-			fmt.Println(err);
-			return;
-		}
-		num = num + intSplitData;
-		for j:=0;j<len(seenBefore);j++ {
-			if num == seenBefore[j] {
-				fmt.Println("Part 2:", num);
-				return;
-			}
-		}
-		seenBefore = append(seenBefore, num);
-	}
-	if !partOneDone {
-	fmt.Println("Part 1:", num);
-	partOneDone = true;
-	}
-	solve();
-}
-
-var num int = 0;
-var splitData []string;
-var seenBefore []int;
-var partOneDone bool = false;
-
 func main() {
+
+	num := 0;
+	var data []string;
+	seenBefore := make(map[int]bool);
+	partOneDone := false;
+
 	buffer, err := os.ReadFile("./input.txt");
 	if err != nil {
-		fmt.Println(err);
-		return;
+		log.Fatal(err);
 	}
-	var data string = string(buffer);
-	splitData = strings.Split(data, "\r\n");
-	solve()
+	data = strings.Split(string(buffer), "\r\n");
+	solve:
+	for i:=0; i<len(data);i++ {
+		if data[i] == "" {
+			continue;
+		}
+		intData, err := strconv.Atoi(data[i]);
+		if err != nil {
+			log.Fatal(err);
+		}
+		num += intData;
+		if seenBefore[num] == true {
+			fmt.Println("Part 2:", num);
+			return;
+		}
+		seenBefore[num] = true;
+	}
+	if !partOneDone {
+		fmt.Println("Part 1:", num);
+		partOneDone = true;
+	}
+	goto solve;
 }
