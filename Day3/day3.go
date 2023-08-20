@@ -58,11 +58,14 @@ func main() {
 				continue
 			}
 
-			// I spent several days on this single if statement..
-			if data[i].minX <= data[j].maxX && data[i].maxX >= data[j].minX && data[i].minY <= data[j].maxY && data[i].maxY >= data[j].minY || data[j].minX <= data[i].maxX && data[j].maxX >= data[i].minX && data[j].minY <= data[i].maxY && data[j].maxY >= data[i].minY {
+			xOverlaps := data[i].minX <= data[j].maxX && data[i].maxX >= data[j].minX
+			yOverlaps := data[i].minY <= data[j].maxY && data[i].maxY >= data[j].minY
+
+			if xOverlaps && yOverlaps {
 				num++
 				break
 			}
+
 		}
 		if num == 0 {
 			fmt.Println("Part 2:", strings.Replace(data[i].id, "#", "", -1))
