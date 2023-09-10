@@ -47,7 +47,6 @@ func sortLog(log []parsedLog) []parsedLog {
 
 func getTimeAsleep(logs []parsedLog) map[string]int {
 	guards := make(map[string]int)
-	totalMinutesAsleep := make(map[int]int)
 	currentGuard := -1
 	asleep := 0
 	for _, log := range logs {
@@ -60,7 +59,6 @@ func getTimeAsleep(logs []parsedLog) map[string]int {
 			asleep = log.minute
 		}
 		if log.instruction == "wakes up" {
-			totalMinutesAsleep[log.id] += log.minute - asleep
 			for i := asleep; i < log.minute; i++ {
 				guards[strconv.Itoa(log.id)+"_"+strconv.Itoa(i)]++
 			}
