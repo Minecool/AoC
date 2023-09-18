@@ -3,83 +3,41 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"
+	"time"
 )
 
 func main() {
 	buffer, _ := os.ReadFile("./input.txt")
-	lowestValue := len(buffer)
-	for i := 'a'; i <= '{'; i++ {
-		data := string(buffer)
-		prev := 0
-		r := strings.NewReplacer(
-			"Aa", "",
-			"aA", "",
-			"Bb", "",
-			"bB", "",
-			"Cc", "",
-			"cC", "",
-			"Dd", "",
-			"dD", "",
-			"Ee", "",
-			"eE", "",
-			"Ff", "",
-			"fF", "",
-			"Gg", "",
-			"gG", "",
-			"Hh", "",
-			"hH", "",
-			"Ii", "",
-			"iI", "",
-			"Jj", "",
-			"jJ", "",
-			"Kk", "",
-			"kK", "",
-			"Ll", "",
-			"lL", "",
-			"Mm", "",
-			"mM", "",
-			"Nn", "",
-			"nN", "",
-			"Oo", "",
-			"oO", "",
-			"Pp", "",
-			"pP", "",
-			"Qq", "",
-			"qQ", "",
-			"Rr", "",
-			"rR", "",
-			"Ss", "",
-			"sS", "",
-			"Tt", "",
-			"tT", "",
-			"Uu", "",
-			"uU", "",
-			"Vv", "",
-			"vV", "",
-			"Ww", "",
-			"wW", "",
-			"Xx", "",
-			"xX", "",
-			"Yy", "",
-			"yY", "",
-			"Zz", "",
-			"zZ", "",
-			string(i), "",
-			strings.ToUpper(string(i)), "",
-		)
-	repeat:
-		data = r.Replace(data)
-		if prev != len(data) {
-			prev = len(data)
-			goto repeat
+	part1 := len(buffer)
+	part2 := len(buffer)
+	for char := 'a'; char <= '{'; char++ {
+		// data := buffer // the sole reason my first solution wouldn't work.. everything after the first loop had a length of 50k..
+		data := make([]byte, len(buffer))
+		copy(data, buffer)
+		for i := 0; i < len(data)-1; i++ {
+			if data[i] == byte(char) || data[i] == byte(char-0x20) { // ended up being cleaner than strings.ToUpper / thanks hope
+				data = append(data[:i], data[i+1:]...) // thanks hope
+				if i == 0 {                            // doesn't feel too good running this check every time
+					i++
+				}
+				i--
+			}
+			if data[i]-data[i+1] == 0x20 || data[i+1]-data[i] == 0x20 { // could probably make this its own function but meh
+				data = append(data[:i], data[i+2:]...)
+				if i == 0 {
+					i++
+				}
+				i -= 2
+			}
 		}
-		if len(data) < lowestValue {
-			lowestValue = len(data)
+		if len(data) < part2 {
+			part2 = len(data)
 		}
-		if i == '{' {
-			fmt.Println("Part 1:", len(data))
-			fmt.Println("Part 2:", lowestValue)
+		if char == '{' {
+			part1 = len(data)
 		}
 	}
+
+	fmt.Println("Part 1:", part1)
+	fmt.Println("Part 2:", part2)
 }
